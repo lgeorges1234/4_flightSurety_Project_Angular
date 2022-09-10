@@ -1,1 +1,56 @@
-/* You can add global styles to this file, and also import other style files */
+/* @import “~@angular/material/prebuilt-themes/pink-blue Grey.css”; */
+
+* {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    background-image: url('../src/assets/img/flight.jpg'); /* Source: iStockPhoto */
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.form-container {
+    width: 45%;
+    height: 200px;;
+    margin: auto auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #000;
+    opacity: 0.9;
+}
+
+mat-form-field {
+    color: #fff;
+
+}
+
+button {
+    color: #ffffff;
+    background-color: #ff1493;
+    border-color: #130269;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: .8em 1.8em;
+    font-size: 1.2 rem;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }

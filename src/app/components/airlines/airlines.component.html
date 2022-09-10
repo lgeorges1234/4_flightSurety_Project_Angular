@@ -1,0 +1,19 @@
+<div class="main-container">
+    <form [formGroup]="airlineForm" (ngSubmit)="submitForm()" novalidate autocomplete="off">
+        <div class="form-container">
+            <mat-form-field>
+                <mat-select matSelect formControlName="airline" placeholder="Select Airline">
+                    <mat-option [value]="null" disabled>Select Airline</mat-option>
+                    <mat-option *ngFor="let airline of airlineList" [value]="airline">{{ airline }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Flight Number" name="flightName" formControlName="flightName" maxlength="5" minlength="5" required>
+                <mat-error *ngFor="let validation of accountValidationMessages.flightName">
+                    <mat-error *ngIf="airlineForm.get('flightName')!.hasError(validation.type) && (airlineForm.get('flightName')!.dirty || airlineForm.get('flightName')!.touched)">{{validation.message}}</mat-error>
+                </mat-error>
+            </mat-form-field>
+            <button type="submit">Submit Flight</button>
+        </div>
+    </form>
+</div>

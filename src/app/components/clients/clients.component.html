@@ -1,0 +1,26 @@
+<div class="main-container">
+    <form [formGroup]="clientForm" (ngSubmit)="submitForm()" novalidate autocomplete="off">
+        <div class="form-container">
+            <mat-form-field>
+                <mat-select matSelect formControlName="airline" placeholder="Select Airline" (selectionChange)="getFlights()" required>
+                    <mat-option [value]="null" disabled>Select Airline</mat-option>
+                    <mat-option *ngFor="let airline of airlineList" [value]="airline">{{ airline }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select matSelect formControlName="flights" placeholder="Select Flight" required="">
+                    <mat-option [value]="null" disabled>Select Flight</mat-option>
+                    <mat-option *ngFor="let flight of flightList" [value]="flight">{{ flight }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Amount" name="amount" formControlName="amount" required>
+                <mat-error *ngFor="let validation of accountValidationMessages.amount">
+                  <mat-error *ngIf="clientForm?.get('amount')?.hasError(validation.type) && (clientForm.get('amount')?.dirty || clientForm.get('amount')?.touched)">{{validation.message}}</mat-error>
+                </mat-error>
+              </mat-form-field>
+
+            <button type="submit">Submit Insurance</button>
+        </div>
+    </form>
+</div>

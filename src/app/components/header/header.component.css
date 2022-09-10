@@ -1,0 +1,41 @@
+.nav-container {
+    background-color: #000;
+    opacity: 0.6;
+    color: #fff;
+    padding: .9em;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.4rem;
+}
+
+.nav {
+    margin-left: 70px;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.7rem;
+    margin-right: 70px;
+    font-variant-caps: all-small-caps;
+    padding-bottom: 2px;
+    letter-spacing: 1px;
+    color: #f2f2f2;
+  }
+  
+  .nav a:hover,
+  .nav a:focus {
+    border-bottom: solid 2px;
+    color: #fff;
+  }
+
+  .on-contract {
+    justify-self: flex-end;
+    background-color: green;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+  }

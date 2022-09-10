@@ -1,0 +1,8 @@
+<div class="nav-container">
+    <h1 class="logo">FlightSurety</h1>
+    <div class="nav">
+        <a routerLink="/airlines" routerLinkActive="active">Airlines</a>
+        <a routerLink="/clients" routerLinkActive="active">Clients</a>
+    </div>
+    <div class="on-contract" [ngStyle]="{'background-color': this.cartStatus? 'green' : 'red'}"></div>
+</div>
