@@ -8,9 +8,9 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
-                <mat-select matSelect formControlName="flights" placeholder="Select Flight" required="">
+                <mat-select matSelect formControlName="flight" placeholder="Select Flight" required="">
                     <mat-option [value]="null" disabled>Select Flight</mat-option>
-                    <mat-option *ngFor="let flight of flightList" [value]="flight">{{ flight }}</mat-option>
+                    <mat-option *ngFor="let flight of flightList" [value]="flight">{{ flight.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field>

@@ -17,7 +17,7 @@ module.exports = function(deployer) {
                         }
                     }
                     fs.writeFileSync(__dirname + '/../../src/assets/app/config.json',JSON.stringify(config, null, '\t'), 'utf-8');
-                    // fs.writeFileSync(__dirname + '/../src/server/config.json',JSON.stringify(config, null, '\t'), 'utf-8');
+                    fs.writeFileSync(__dirname + '/../../src/assets/server/config.json',JSON.stringify(config, null, '\t'), 'utf-8');
                 });
     });
 }

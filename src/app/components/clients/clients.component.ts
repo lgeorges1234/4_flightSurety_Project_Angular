@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ContractService } from 'src/app/services/contract.service';
+import { FlightClass } from 'src/app/models/flight-class.model';
 
 @Component({
   selector: 'app-clients',
@@ -10,7 +11,8 @@ import { ContractService } from 'src/app/services/contract.service';
 export class ClientsComponent implements OnInit {
   clientForm!: FormGroup;
   airlineList: [] = [];
-  flightList: [] = [];
+  flightList: FlightClass[] = [];
+  flightNameList: string[] = [];
   amount: number = 0;
   client: any;
 
@@ -43,7 +45,7 @@ export class ClientsComponent implements OnInit {
   createForms() {
     this.clientForm = this.fb.group({
       airline: new FormControl(this.airlineList),
-      flights: new FormControl(this.flightList),
+      flight: new FormControl(this.flightList),
       amount: new FormControl(this.amount, Validators.compose([
         Validators.required,
         Validators.pattern('^[+]?([.]\\d+|\\d+[.]?\\d*)$')
@@ -58,7 +60,11 @@ export class ClientsComponent implements OnInit {
     } else {
       console.log('clients.components :: submitForm :: this.airlineForm.value');
       console.log(this.clientForm.value);
-      this.contractService.buyInsurance(this.clientForm.value, this.client).
+      const airline = this.clientForm.value.airline;
+      const flightName = this.clientForm.value.flight.name;
+      const flightTimestamp = this.clientForm.value.flight.timestamp;
+      const amount = this.clientForm.value.amount;
+      this.contractService.buyInsurance(flightName, flightTimestamp, airline , this.client, amount).
       then(function() {}).catch(function(error: any) {
       console.log(error);
       });
@@ -73,8 +79,13 @@ export class ClientsComponent implements OnInit {
   }
 
   async getFlights(): Promise<void> {
-    console.log(this.clientForm.value)
-    let result = await this.contractService.getRegisteredFlights(this.clientForm.value);
-    this.flightList = result;
+    let getRegisteredFlightsResult = await this.contractService.getRegisteredFlights(this.clientForm.value);
+    for(let flight of getRegisteredFlightsResult) {
+      let getFlightNameResult = await this.contractService.getFlightName(flight);
+      let getFlightTimestampResult = await this.contractService.getFlightTimestamp(flight);
+      let getFlightStatusCode = await this.contractService.getFlightStatusCode(flight);
+      this.flightList.push({id: flight, name: getFlightNameResult, timestamp: getFlightTimestampResult, statusCode: getFlightStatusCode})
+    }
+    for(let flight of this.flightList) this.flightNameList.push(flight.name);
   }
 }

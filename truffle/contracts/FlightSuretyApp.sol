@@ -326,6 +326,39 @@ contract FlightSuretyApp {
         return flightSuretyData.whatFlight(_airline);
     }
 
+    function getFlightsName 
+                                (
+                                    bytes32 _flightID
+                                )
+                                public
+                                requireIsOperational
+                                returns(bytes32)
+    {
+        return flightSuretyData.whatFlightName(_flightID);
+    }
+
+    function getFlightsTimestamp
+                                (
+                                    bytes32 _flightID
+                                )
+                                public
+                                requireIsOperational
+                                returns(uint256)
+    {
+        return flightSuretyData.whatFlightTimestamp(_flightID);
+    }
+
+    function getFlightsStatus
+                                (
+                                    bytes32 _flightID
+                                )
+                                public
+                                requireIsOperational
+                                returns(uint256)
+    {
+        return flightSuretyData.viewFlightSatus(_flightID);
+    }
+
     /**
     * @dev Allows passenger to insure a flight
     *

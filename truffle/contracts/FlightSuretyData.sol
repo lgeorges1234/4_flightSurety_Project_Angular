@@ -321,7 +321,33 @@ contract FlightSuretyData {
                         requireIsOperational 
                         returns(bytes32[])
     {
-        return Airlines[_airline].flightName;
+        return Airlines[_airline].flightID;
+    }
+
+    // Return the list of flight's name
+    function whatFlightName
+                        (
+                            bytes32 _flightID
+                        )
+                        external
+                        view
+                        requireIsOperational 
+                        returns(bytes32)
+    {
+        return Flights[_flightID].flightName;
+    }
+
+    // Return the list of flight's name
+    function whatFlightTimestamp
+                        (
+                            bytes32 _flightID
+                        )
+                        external
+                        view
+                        requireIsOperational 
+                        returns(uint256)
+    {
+        return Flights[_flightID].updatedTimestamp;
     }
 
     // Return true if flight is registered
@@ -343,14 +369,10 @@ contract FlightSuretyData {
     // Return status code of a flight
     function viewFlightSatus 
                             (
-                                bytes32 _flightName,
-                                address _airline,
-                                uint256 _timeStamp                              
+                            bytes32 _flightID                           
                             )
                             returns(uint256)
     {
-        // Get a unique 32 bytes ID to the flight given airline, flight name and timestamp
-        bytes32 _flightID = getFlightKey(_airline, _flightName, _timeStamp); 
         // Check if flight is registered
         require(Flights[_flightID].isRegistered == true, "Flight must first be registered before to get status");
         return Flights[_flightID].statusCode;  

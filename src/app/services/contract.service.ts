@@ -163,26 +163,69 @@ export class ContractService {
     } catch(e: any) {   
       console.log(e.message)   
     }
+    console.log(getRegisteredFlightResult)
+    return getRegisteredFlightResult;
 
-    let stringResult: [] = [];
-    for (let flight of getRegisteredFlightResult) {
-        stringResult.push(this.web3.utils.toAscii(flight).substring(0,5) as never)
-    }
-
-    return stringResult;
   } 
 
-  async buyInsurance(formValue: { airline: string; flights: string; amount: number}, msgSender: any): Promise<any> {
+  async getFlightName(id: any) {
+    console.log(`contractService  ::   getFlightName`);
+    let self = this;
+
+    let getFlightsNameResult;
+    try {
+      getFlightsNameResult = await self.flightSuretyApp.methods
+          .getFlightsName(id)
+          .call()
+    } catch(e: any) {   
+      console.log(e.message)   
+    }
+    console.log(this.web3.utils.hexToString(getFlightsNameResult))
+    return this.web3.utils.hexToString(getFlightsNameResult);
+  } 
+
+  async getFlightTimestamp(id: any) {
+    console.log(`contractService  ::   getFlightTimestamp`);
+    let self = this;
+
+    let getFlightTimestampResult;
+    try {
+      getFlightTimestampResult = await self.flightSuretyApp.methods
+          .getFlightsTimestamp(id)
+          .call()
+    } catch(e: any) {   
+      console.log(e.message)   
+    }
+    console.log(getFlightTimestampResult)
+    return getFlightTimestampResult;
+  } 
+
+  async getFlightStatusCode(id: any) {
+    console.log(`contractService  ::   getFlightStatusCode`);
+    let self = this;
+
+    let getFlightStatusCodeResult;
+    try {
+      getFlightStatusCodeResult = await self.flightSuretyApp.methods
+          .getFlightsStatus(id)
+          .call()
+    } catch(e: any) {   
+      console.log(e.message)   
+    }
+    console.log(getFlightStatusCodeResult)
+    return getFlightStatusCodeResult;
+  } 
+
+  async buyInsurance(name: any, timestamp: any, airline: any, msgSender: any, amount: any): Promise<any> {
     console.log(`contractService  ::   buyInsurance`);
     let self = this;
-    const airline = formValue.airline;
-    const flight = this.web3.utils.fromAscii(formValue.flights); 
-    let timeStamp = Math.floor(Date.now() / 1000);
-    const FLIGHT_INSURANCE_AMOUNT = this.web3.utils.toWei(formValue.amount, "ether");
+
+    const flightName = this.web3.utils.fromAscii(name); 
+    const FLIGHT_INSURANCE_AMOUNT = this.web3.utils.toWei(amount, "ether");
     let buyInsuranceResult;
     try {
       buyInsuranceResult = await self.flightSuretyApp.methods
-          .buyInsurance(flight, timeStamp, airline)
+          .buyInsurance(flightName, timestamp, airline)
           .send({
             "from": msgSender,   
             "value": FLIGHT_INSURANCE_AMOUNT,
