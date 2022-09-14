@@ -44,6 +44,7 @@ contract FlightSuretyData {
 
     mapping (bytes32 => Flight) Flights;
 
+    // Insurance structure
     struct Insurance {
         bytes32 insuranceID;
         bytes32 flightID;
@@ -53,7 +54,7 @@ contract FlightSuretyData {
 
     mapping (bytes32 => Insurance) Insurances;
 
-
+    // list of all client's accounts
     mapping (address => uint256) Accounts;
 
 /********************************************************************************************/
@@ -83,23 +84,36 @@ contract FlightSuretyData {
         _;
     }
 
+    /**
+    * @dev Modifier that requires the airline to be registered
+    */
     modifier requireIsRegistered(address _airline)
     {
         require(Airlines[_airline].registered == true, "Airline is not registered");
         _;
     }
 
+    /**
+    * @dev Modifier that requires the airline not to be registered
+    */
     modifier requireIsNotRegistered(address _airline)
     {
         require(Airlines[_airline].registered == false, "Airline is already registered");
         _;
     }
+
+    /**
+    * @dev Modifier that requires the airline not to be funded
+    */
     modifier requireIsNotFunded(address _airline)
     {
         require(Airlines[_airline].funded == false, "Airline is already funded");
         _;
     }
 
+    /**
+    * @dev Modifier that requires the flight to be registered
+    */
     modifier requireIsFlightRegistered(address _airline)
     {
         require(Airlines[_airline].registered == true, "Airline is not registered");
@@ -149,6 +163,7 @@ contract FlightSuretyData {
     */      
     function isOperational() 
                             external 
+                            view
                             returns(bool) 
     {
         return operational;
@@ -165,6 +180,7 @@ contract FlightSuretyData {
                                 bool mode
                             ) 
                             external
+
                             requireContractOwner 
     {
         operational = mode;
@@ -350,7 +366,7 @@ contract FlightSuretyData {
         return Flights[_flightID].updatedTimestamp;
     }
 
-    // Return true if flight is registered
+    // Return true if a flight is registered
     function isFlight 
                         (
                             bytes32 _flightName,
@@ -371,9 +387,28 @@ contract FlightSuretyData {
                             (
                             bytes32 _flightID                           
                             )
+                            external
+                            view
                             returns(uint256)
     {
         // Check if flight is registered
+        require(Flights[_flightID].isRegistered == true, "Flight must first be registered before to get status");
+        return Flights[_flightID].statusCode;  
+    }
+
+    // Return status code of a flight Test function
+    function viewFlightSatusTest 
+                            (
+                            bytes32 _flightName,
+                            uint256 _timeStamp,
+                            address _airline                          
+                            )
+                            external
+                            view
+                            returns(uint256)
+    {
+        // Check if flight is registered
+        bytes32 _flightID = getFlightKey(_airline, _flightName, _timeStamp);
         require(Flights[_flightID].isRegistered == true, "Flight must first be registered before to get status");
         return Flights[_flightID].statusCode;  
     }
@@ -422,6 +457,8 @@ contract FlightSuretyData {
                             address _passenger,
                             uint256 _value
                         )
+                        external
+                        view
                         returns(bool)
     {
         // Get a unique 32 bytes ID to the flight given airline, flight name and timestamp
@@ -494,16 +531,17 @@ contract FlightSuretyData {
     */
     function withdraw
                             (
-                                address _account,
+                                address caller,
                                 uint256 _amount
+                                
                             )
                             external
                             payable
     {
-        require(Accounts[_account] >= _amount, "You don't have sufficient funds to withdraw this amount");
-        Accounts[_account] = Accounts[_account].sub(_amount);
-        // _account.transfer(_amount);
-        emit accountTransfer(_account, _amount, Accounts[_account]);
+        require(Accounts[caller] >= _amount, "You don't have sufficient funds to withdraw this amount");
+        Accounts[caller] = Accounts[caller].sub(_amount);
+        // caller.transfer(_amount);
+        emit accountTransfer(caller, _amount, Accounts[caller]);
     }
 
    /**
@@ -527,6 +565,11 @@ contract FlightSuretyData {
         emit funded(_account, address(this), _value);
     }
 
+   /**
+    * @dev Get the balance of an client's account
+    *      A delayed flight will produce a transfer from the contract's balance to the client's account
+    *
+    */  
     function getBalance
                             (
                                 address _account
@@ -538,6 +581,10 @@ contract FlightSuretyData {
         return Accounts[_account];
     }
 
+   /**
+    * @dev Get the balance of the contract's account
+    *
+    */
     function getContractBalance
                             (
                             )
@@ -548,6 +595,11 @@ contract FlightSuretyData {
         return Accounts[address(this)];
     }
 
+
+    /**
+    * @dev Return the unique Id of a flight
+    *
+    */
     function getFlightKey
                         (
                             address _airline,
@@ -561,7 +613,11 @@ contract FlightSuretyData {
         return keccak256(abi.encodePacked(_airline, _flight, _timestamp));
     }
 
-        function getInsuranceKey
+    /**
+    * @dev Return the unique Id of an insurance
+    *
+    */
+    function getInsuranceKey
                         (
                             bytes32 _flightID,
                             address _passenger,

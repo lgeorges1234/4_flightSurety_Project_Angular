@@ -16,6 +16,7 @@ import { AirlinesComponent } from './components/airlines/airlines.component';
 import { ClientsComponent } from './components/clients/clients.component';
 import { HeaderComponent } from './components/header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OraclesComponent } from './components/oracles/oracles.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     FooterComponent,
     AirlinesComponent,
     ClientsComponent,
-    HeaderComponent
+    HeaderComponent,
+    OraclesComponent
   ],
   imports: [
     BrowserModule,

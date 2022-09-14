@@ -8,7 +8,7 @@ import { ContractService } from 'src/app/services/contract.service';
   providers: [ContractService]
 })
 export class HeaderComponent implements OnInit {
-  cartStatus: boolean = false;
+  contractStatus: boolean = false;
   constructor(private contractService: ContractService) { }
 
   ngOnInit(): void {
@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit {
   }
 
   async setStatus(): Promise<void> {
-    this.cartStatus = await this.contractService.isOperational();
+    this.contractStatus = await this.contractService.isOperational();
   }
 
 }

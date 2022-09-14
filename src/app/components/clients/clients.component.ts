@@ -15,6 +15,10 @@ export class ClientsComponent implements OnInit {
   flightNameList: string[] = [];
   amount: number = 0;
   client: any;
+  flySuretyBalance: number = 0;
+  accountBalance: number = 0;
+  eventToDisplay: any;
+  resultToDisplay: any;
 
   accountValidationMessages = {
     amount: [
@@ -34,7 +38,8 @@ export class ClientsComponent implements OnInit {
   async initialize(): Promise<void> {
     await this.getActiveAirlines();
     this.client = await this.getAccount(8);
-    // await this.getFlights();
+    await this.getFlightSuretyBalance(this.client);
+    await this.getAccountBalance(this.client);
   }
 
   async getAccount(index: number): Promise<any> {
@@ -42,11 +47,22 @@ export class ClientsComponent implements OnInit {
     return result;
   }
 
+  async getFlightSuretyBalance(account: any): Promise<any> {
+    let result = await this.contractService.getFlightSuretyBalance(account);
+    this.flySuretyBalance = this.contractService.weiToEther(result);
+    console.log(this.flySuretyBalance)
+  }
+
+  async getAccountBalance(account: any): Promise<any> {
+    let result = await this.contractService.getBalance(account);
+    this.accountBalance = this.contractService.weiToEther(result);
+  }
+
   createForms() {
     this.clientForm = this.fb.group({
       airline: new FormControl(this.airlineList),
       flight: new FormControl(this.flightList),
-      amount: new FormControl(this.amount, Validators.compose([
+      amount: new FormControl('',Validators.compose([
         Validators.required,
         Validators.pattern('^[+]?([.]\\d+|\\d+[.]?\\d*)$')
       ]))
@@ -54,6 +70,7 @@ export class ClientsComponent implements OnInit {
   }
 
   submitForm() {
+    let self = this;
     if (this.clientForm.invalid) {
       alert('clients.components :: submitForm :: Form invalid');
       return;
@@ -65,10 +82,23 @@ export class ClientsComponent implements OnInit {
       const flightTimestamp = this.clientForm.value.flight.timestamp;
       const amount = this.clientForm.value.amount;
       this.contractService.buyInsurance(flightName, flightTimestamp, airline , this.client, amount).
-      then(function() {}).catch(function(error: any) {
+      then(function(data) {
+        let flightName =  self.contractService.hexToString(data.returnValues.flightName);
+        self.eventToDisplay = data.event;
+        self.resultToDisplay = `Flights: ${flightName} Passenger: ${data.returnValues.passenger} Amount: ${data.returnValues.value} `;
+      })
+      .catch(function(error: any) {
       console.log(error);
       });
     }
+  }
+
+  async withdraw(): Promise<void> {
+  
+    // const amount: number = +this.flySuretyBalance;
+    const amount = this.flySuretyBalance;
+    await this.contractService.withdraw(amount, this.client);
+    await this.contractService.getFlightSuretyBalance(this.client);
   }
 
   async getActiveAirlines(): Promise<void> {

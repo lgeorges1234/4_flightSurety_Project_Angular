@@ -14,7 +14,8 @@ import "./FlightSuretyData.sol";
 /* FlightSurety Smart Contract                      */
 /************************************************** */
 contract FlightSuretyApp {
-    using SafeMath for uint256; // Allow SafeMath functions to be called for all uint256 types (similar to "prototype" in Javascript)
+    // Allow SafeMath functions to be called for all uint256 types (similar to "prototype" in Javascript)
+    using SafeMath for uint256; 
     /********************************************************************************************/
     /*                                       DATA VARIABLES                                     */
     /********************************************************************************************/
@@ -48,7 +49,7 @@ contract FlightSuretyApp {
         uint256 updatedTimestamp;        
         address airline;
     }
-    // mapping of all flights recorded
+    // mapping to keep records of all flights by flight_Id.
     mapping(bytes32 => Flight) private flights;
 
 
@@ -81,23 +82,35 @@ contract FlightSuretyApp {
         _;
     }
 
+    /**
+    * @dev Modifier that check if the required amount of fund have been provided by the airline
+    */
     modifier requireEnoughFunds() {
         require(msg.value == AIRLINE_REGISTRATION_FEE, "You must provide enough Ethers to fund the seed");
         _;
     }
 
+    /**
+    * @dev Modifier that requires an airline to be registered
+    */
     modifier requireRegisteredAirline()
     {
         require(flightSuretyData.isAirline(msg.sender) == true, "Airline making the call is not registred");
         _;
     }
 
+    /**
+    * @dev Modifier that requires an airline to be funded
+    */
     modifier requireFundedAirline()
     {
         require(flightSuretyData.isFundedAirline(msg.sender) == true, "Airline making the call has not provided funds");
         _;
     }
 
+    /**
+    * @dev Modifier that requires the number of votes to be fullfill
+    */
     modifier requireHasNotVoted(address[] multiCalls)
     {
         bool isDuplicate = false;
@@ -111,6 +124,9 @@ contract FlightSuretyApp {
         _;
     }
 
+        /**
+    * @dev Modifier that requires the amount to buy an insurance to be between 0 and 1 Eth
+    */
     modifier requireRequiredValue() {
         require(msg.value > 0 && msg.value <= FLIGHT_INSURANCE_AMOUNT, "You must provide enough Ethers to buy an insurance");
         _;
@@ -120,11 +136,11 @@ contract FlightSuretyApp {
     /*                                       EVENTS DECLARATION                                */
     /********************************************************************************************/
 
-    event AirlineWasRegisteredApp(address airline);
-    event AirlineWasFundedApp(address airline, uint256 amount);
+    event AirlineWasRegistered(address airline);
+    event AirlineWasFunded(address airline, uint256 amount);
     event AirlineHasOneMoreVote(address airline, uint256 vote);
-    event FlightWasRegisteredApp(bytes32 _flightName, uint256 _timeStamp, address _airline);
-    event newInsuranceApp(bytes32 flightName, address passenger, uint256 value);
+    event FlightWasRegistered(bytes32 flightName, uint256 timeStamp, address airline);
+    event newInsuranceHasBeenSubmitted(bytes32 flightName, address passenger, uint256 value);
     event flightHasBeenProcessed(address airline, bytes32 flight, uint256 timestamp, uint8 statusCode);
 
     /********************************************************************************************/
@@ -150,8 +166,13 @@ contract FlightSuretyApp {
     /*                                       UTILITY FUNCTIONS                                  */
     /********************************************************************************************/
 
+   /**
+    * @dev returns the contract state as a boolean
+    *
+    */ 
     function isOperational() 
                             external 
+                            view
                             returns(bool) 
     {
         return flightSuretyData.isOperational();  // call data contract's status
@@ -165,6 +186,8 @@ contract FlightSuretyApp {
                             (
                                 uint256 numberOfVoters
                             )
+                            internal
+                            pure
                             returns(uint256 number)
     {
         uint256 threshold = numberOfVoters.div(2);
@@ -184,6 +207,8 @@ contract FlightSuretyApp {
                             address[] multiCalls,
                             uint256 threshold
                             )
+                            internal
+                            pure
                             returns(bool)
     {
         if (multiCalls.length >= threshold) {
@@ -208,14 +233,15 @@ contract FlightSuretyApp {
                                     address _airline
                                     ) 
                                     requireContractOwner
+                                    external
                                     returns(bool)
     {
         flightSuretyData.registerAirline(_airline);
-        emit AirlineWasRegisteredApp(_airline);
+        emit AirlineWasRegistered(_airline);
         return flightSuretyData.isAirline(_airline);
     }
 
-       /**
+    /**
     * @dev Add an airline to the registration queue
     *
     */   
@@ -224,7 +250,7 @@ contract FlightSuretyApp {
                             (
                                 address _airline   
                             )
-                            public
+                            external
                             requireIsOperational
                             requireRegisteredAirline
                             requireFundedAirline
@@ -256,7 +282,7 @@ contract FlightSuretyApp {
             // Ensure that the number of votes have been set to 0 
             require(multiCallsAirlines[_airline].length == 0, "number of votes should be set to 0");
             flightSuretyData.registerAirline(_airline);
-            emit AirlineWasRegisteredApp(_airline);
+            emit AirlineWasRegistered(_airline);
         }
         return (flightSuretyData.isAirline(_airline), multiCallsAirlines[_airline].length);
     }
@@ -269,7 +295,7 @@ contract FlightSuretyApp {
     function submitFundsAirline
                                 (
                                 )
-                                public
+                                external
                                 payable
                                 requireIsOperational
                                 requireEnoughFunds
@@ -279,15 +305,19 @@ contract FlightSuretyApp {
         // address(this).transfer(100000000000);
         flightSuretyData.submitFundsAirline(msg.sender, AIRLINE_REGISTRATION_FEE);
         // Emit according event
-        emit AirlineWasFundedApp(msg.sender, AIRLINE_REGISTRATION_FEE);
+        emit AirlineWasFunded(msg.sender, AIRLINE_REGISTRATION_FEE);
         return (flightSuretyData.isFundedAirline(msg.sender));
     }
 
-
+   /**
+    * @dev returns the registered and funded airlines
+    *
+    */ 
     function getActiveAirlines 
                                 (
                                 )
-                                public
+                                external
+                                view
                                 requireIsOperational
                                 returns(address[])
     {
@@ -311,48 +341,71 @@ contract FlightSuretyApp {
         // Send request to data contract to register a flight
         flightSuretyData.registerFlight(_flightName, _timeStamp, STATUS_CODE_UNKNOWN, msg.sender);
         // Emit according event
-        emit FlightWasRegisteredApp(_flightName, _timeStamp, msg.sender);
+        emit FlightWasRegistered(_flightName, _timeStamp, msg.sender);
         return flightSuretyData.isFlight(_flightName, _timeStamp, msg.sender);
     }
 
+   /**
+    * @dev returns all registered flights for a given airline
+    *
+    */ 
     function getAirlinesFlights 
                                 (
                                     address _airline
                                 )
-                                public
+                                external
+                                view
                                 requireIsOperational
                                 returns(bytes32[])
     {
         return flightSuretyData.whatFlight(_airline);
     }
 
+    /**
+    * @dev returns the name of the flight given it's ID
+    *
+    */ 
+
     function getFlightsName 
                                 (
                                     bytes32 _flightID
                                 )
-                                public
+                                external
+                                view
                                 requireIsOperational
                                 returns(bytes32)
     {
         return flightSuretyData.whatFlightName(_flightID);
     }
 
+    /**
+    * @dev returns the timestamp of the flight given it's ID
+    *
+    */ 
+
     function getFlightsTimestamp
                                 (
                                     bytes32 _flightID
                                 )
-                                public
+                                external
+                                view
                                 requireIsOperational
                                 returns(uint256)
     {
         return flightSuretyData.whatFlightTimestamp(_flightID);
     }
 
+    /**
+    * @dev returns the statuscode of the flight given it's ID
+    *
+    */ 
+
     function getFlightsStatus
                                 (
                                     bytes32 _flightID
                                 )
-                                public
+                                external
+                                view
                                 requireIsOperational
                                 returns(uint256)
     {
@@ -370,6 +423,7 @@ contract FlightSuretyApp {
                                     uint256 _timeStamp,
                                     address _airline
                             )
+                            external
                             payable
                             requireRequiredValue
                             returns(bool success)
@@ -377,12 +431,43 @@ contract FlightSuretyApp {
         // Send request to data contract to insure a flight
         flightSuretyData.buyInsurance(_flightName, _timeStamp, _airline, msg.sender, msg.value);
         // Emit according event
-        emit newInsuranceApp(_flightName, msg.sender, msg.value);
+        emit newInsuranceHasBeenSubmitted(_flightName, msg.sender, msg.value);
         return flightSuretyData.isInsured(_flightName, _timeStamp, _airline, msg.sender, msg.value);
     }
+
+    /**
+    * @dev returns the balance of an account
+    *
+    */ 
     
+    function getBalance
+                        (
+                            address _account
+                        )
+                        external
+                        view
+                        returns(uint256 balance)
+    {
+        return flightSuretyData.getBalance(_account);
+    }
+
+    /**
+    * @dev allow passengers to withdraw the balance of their account to a EOA
+    *
+    */ 
+
+    function withdraw
+                        (
+                            uint256 _amount
+                        )
+                        payable
+                        external
+    {
+        return flightSuretyData.withdraw(msg.sender, _amount);
+    }
+
    /**
-    * @dev Called after oracle has updated flight status
+    * @dev called after oracle has updated flight status
     *
     */  
     function processFlightStatus
@@ -392,14 +477,14 @@ contract FlightSuretyApp {
                                     uint256 timestamp,
                                     uint8 statusCode
                                 )
-                                
+                                public
     {
         flightSuretyData.creditInsurees(airline, flight, timestamp, statusCode);
         emit flightHasBeenProcessed(airline, flight, timestamp, statusCode);
     }
 
 
-    // Generate a request for oracles to fetch flight information
+    // generate a request for oracles to fetch flight information
     function fetchFlightStatus
                         (
                             address airline,
@@ -483,6 +568,7 @@ contract FlightSuretyApp {
                                     });
     }
 
+    // return the index of the oracle
     function getMyIndexes
                             (
                             )
@@ -532,7 +618,7 @@ contract FlightSuretyApp {
         }
     }
 
-
+    // return the id of a flight
     function getFlightKey
                         (
                             address airline,

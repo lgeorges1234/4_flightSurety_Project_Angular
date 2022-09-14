@@ -1,5 +1,6 @@
 <div class="main-container">
-    <form [formGroup]="clientForm" (ngSubmit)="submitForm()" novalidate autocomplete="off">
+
+    <form [formGroup]="clientForm" (ngSubmit)="submitForm()" novalidate autocomplete="off" class="black-container">
         <div class="form-container">
             <mat-form-field>
                 <mat-select matSelect formControlName="airline" placeholder="Select Airline" (selectionChange)="getFlights()" required>
@@ -8,7 +9,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
-                <mat-select matSelect formControlName="flight" placeholder="Select Flight" required="">
+                <mat-select matSelect formControlName="flight" placeholder="Select Flight" required>
                     <mat-option [value]="null" disabled>Select Flight</mat-option>
                     <mat-option *ngFor="let flight of flightList" [value]="flight">{{ flight.name }}</mat-option>
                 </mat-select>
@@ -19,8 +20,18 @@
                   <mat-error *ngIf="clientForm?.get('amount')?.hasError(validation.type) && (clientForm.get('amount')?.dirty || clientForm.get('amount')?.touched)">{{validation.message}}</mat-error>
                 </mat-error>
               </mat-form-field>
-
             <button type="submit">Submit Insurance</button>
         </div>
+        <div *ngIf="resultToDisplay"><em class="accent">{{ eventToDisplay }} --</em> {{ resultToDisplay }}</div>
     </form>
+    <div class="black-container">
+        <div class="form-container">
+            <div class="account"><em class="accent">Account Balance </em> <br>{{ accountBalance }} Eth</div>
+            <div class="withdraw-logo">
+                <img class="arrowPNG" src="../../../assets/img/arrow.png">
+                <button class="withdraw" (click)="withdraw()">Withdraw</button>
+            </div>
+            <div class="account"><em class="accent">FlightSurety Balance </em> <br> {{ flySuretyBalance }} Eth</div>
+        </div> 
+    </div>
 </div>

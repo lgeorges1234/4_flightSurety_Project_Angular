@@ -1,0 +1,20 @@
+<div class="main-container">
+    <form [formGroup]="oracleForm" (ngSubmit)="submitForm()" novalidate autocomplete="off" class="black-container">
+        <div class="form-container">
+            <mat-form-field>
+                <mat-select matSelect formControlName="airline" placeholder="Select Airline" (selectionChange)="getFlights()" required>
+                    <mat-option [value]="null" disabled>Select Airline</mat-option>
+                    <mat-option *ngFor="let airline of airlineList" [value]="airline">{{ airline }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select matSelect formControlName="flight" placeholder="Select Flight" required="">
+                    <mat-option [value]="null" disabled>Select Flight</mat-option>
+                    <mat-option *ngFor="let flight of flightList" [value]="flight">{{ flight.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button type="submit">Fetch Oracle</button>
+        </div>
+        <div *ngIf="resultToDisplay"><em class="accent">{{ eventToDisplay }} --</em> {{ resultToDisplay }}</div>
+    </form>
+</div>

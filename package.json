@@ -4,9 +4,15 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "dapp": "ng serve --port 8000",
+    "dapp:prod": "ng serve --prod",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "server": "nodemon --experimental-json-modules src/server/index.js",
+    "truffle:compile": "cd truffle && truffle --network dev compile",
+    "truffle:migrate": "cd truffle && truffle --network dev migrate --reset",
+    "truffle:test": "cd truffle && truffle --network dev test"
   },
   "private": true,
   "dependencies": {
@@ -49,6 +55,7 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "nodemon": "^2.0.19",
     "truffle": "^5.5.28",
     "typescript": "~4.5.2"
   }

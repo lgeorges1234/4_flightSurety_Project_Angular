@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
 import Web3 from "web3"; 
 import Config from '../../assets/app/config.json';
 
 declare let require: any;
-declare let window: any;
 const tokenAbi = require('../../../truffle/build/contracts/FlightSuretyApp.json');
 
 
@@ -12,9 +10,7 @@ const tokenAbi = require('../../../truffle/build/contracts/FlightSuretyApp.json'
   providedIn: 'root'
 })
 export class ContractService {
-  private account: any = null;
   private web3: any;
-  private enable: any;
 
   private flightSuretyApp : any;
   private owner: any;
@@ -42,6 +38,17 @@ export class ContractService {
       console.log(e.message)   
     }
     return(result[index])
+  }
+
+  async getBalance(account : any): Promise<any> {
+    let self = this;
+    let result;
+    try {
+      result = await self.web3.eth.getBalance(account);
+    } catch(e: any) {   
+      console.log(e.message)   
+    }
+    return(result)
   }
 
   async isOperational(): Promise<boolean> {
@@ -122,7 +129,7 @@ export class ContractService {
   return result;
   }
 
-  async registerFlight(formValue: { airline: string; flightName: string}): Promise<boolean> {
+  async registerFlight(formValue: { airline: string; flightName: string}): Promise<any> {
     console.log(`contractService  ::   registerFlight`);
     let self = this;
 
@@ -144,7 +151,7 @@ export class ContractService {
     }
 
     if(registerFlightResult) console.log(`flightIsRegistered: ${JSON.stringify(registerFlightResult)}  ${airline} ${flightName}`);
-    return registerFlightResult;
+    return registerFlightResult.events.FlightWasRegistered;
   }
 
   async getRegisteredFlights(formValue: {airline: string}) {
@@ -235,9 +242,60 @@ export class ContractService {
     } catch(e: any) {   
       console.log(e.message)   
     }
-    if(buyInsuranceResult) console.log(`is: ${JSON.stringify(buyInsuranceResult)}  ${airline}`);
-    return buyInsuranceResult;
+    if(buyInsuranceResult) console.log(`is: ${JSON.stringify(buyInsuranceResult)}  ${msgSender}`);
+    return buyInsuranceResult.events.newInsuranceHasBeenSubmitted;
+  }
+
+  async getFlightSuretyBalance(account: any): Promise<number> {
+    console.log(`contractService  ::   getBalance`);
+    let self = this;
+
+    let getBalanceResult;
+    try {
+      getBalanceResult = await self.flightSuretyApp.methods
+          .getBalance(account)
+          .call()
+    } catch(e: any) {   
+      console.log(e.message)   
+    }
+    console.log(getBalanceResult)
+    return getBalanceResult;
+  }
+
+  async withdraw(amount: number, caller: any): Promise<void> {
+    let self = this;
+    const amountWei = this.web3.utils.toWei(amount, "ether");
+    console.log(amountWei)
+    try {
+      await self.flightSuretyApp.methods
+          .withdraw(amountWei)
+          .send({ from: caller});
+      } catch(e: any) {   
+        console.log(e.message)   
+      }
   }
   
+  async fetchFlightStatus(airline: any, name: any, timestamp: any, caller: any) {
+    let self = this;
+    const flightName = this.web3.utils.fromAscii(name); 
+    let getFletchFlightStatusResult;
+
+    try {
+    getFletchFlightStatusResult = await self.flightSuretyApp.methods
+        .fetchFlightStatus(airline, flightName, timestamp)
+        .send({ from: caller});
+    } catch(e: any) {   
+      console.log(e.message)   
+    }
+    return getFletchFlightStatusResult.events.OracleRequest;
+  }
+
+  hexToString(name: string) {
+    return this.web3.utils.hexToString(name);
+  }
+
+  weiToEther(value: number) {
+    return this.web3.utils.fromWei(value, 'ether')
+  }
 }
 

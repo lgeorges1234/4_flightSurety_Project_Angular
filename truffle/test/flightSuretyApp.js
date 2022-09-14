@@ -87,7 +87,7 @@ contract('Flight Surety App Tests ', async (accounts) => {
     let result = await config.flightSuretyData.isAirline.call(config.firstAirline);
     // ASSERT
     assert.equal(result, true, "ContractOwner should be able to register the first airline");
-    assert.equal(registerFirstAirlineResult.logs[0].event , "AirlineWasRegisteredApp", "Event AirlineWasRegisteredApp was not emitted");
+    assert.equal(registerFirstAirlineResult.logs[0].event , "AirlineWasRegistered", "Event AirlineWasRegistered was not emitted");
   });
 
 
@@ -111,7 +111,7 @@ contract('Flight Surety App Tests ', async (accounts) => {
     // ASSERT
     assert.equal(result, true, "Airline should be able to fund the contract");
     assert.equal(contractBalanceAfter - contractBalanceBefore, AIRLINE_REGISTRATION_FEE, "Balance has not been increased from funds")
-    assert.equal(submitFundsResult.logs[0].event , "AirlineWasFundedApp", "Event AirlineWasFundedApp was not emitted");
+    assert.equal(submitFundsResult.logs[0].event , "AirlineWasFunded", "Event AirlineWasFunded was not emitted");
   });
 
   it(`() FlighySuretyApp can get whatAirlines() array from FlightSuretyData`, async function () {
@@ -145,7 +145,7 @@ contract('Flight Surety App Tests ', async (accounts) => {
 
       // ASSERT
       assert.equal(result, true, "Airline should be able to register another airline");
-      assert.equal(registerResult.logs[0].event , "AirlineWasRegisteredApp", "Event AirlineWasFundedApp was not emitted");
+      assert.equal(registerResult.logs[0].event , "AirlineWasRegistered", "Event AirlineWasFunded was not emitted");
     });
 
 
@@ -280,7 +280,7 @@ contract('Flight Surety App Tests ', async (accounts) => {
     assert.equal(howManyRegisteredAirlinesResult, 5, "Airline registered number should not be increased by one");
     assert.equal(voteIncrease1.logs[0].event , "AirlineHasOneMoreVote", "Event AirlineHasOneMoreVote was not emitted");
     assert.equal(voteIncrease2.logs[0].event , "AirlineHasOneMoreVote", "Event AirlineHasOneMoreVote was not emitted");
-    assert.equal(voteIncrease2.logs[1].event , "AirlineWasRegisteredApp", "Event AirlineWasFundedApp was not emitted");
+    assert.equal(voteIncrease2.logs[1].event , "AirlineWasRegistered", "Event AirlineWasFunded was not emitted");
   });
 
   it('(airline) can register a flight using registerFlight()', async () => {
@@ -301,8 +301,8 @@ contract('Flight Surety App Tests ', async (accounts) => {
 
     // ASSERT
     assert.equal(isFlightResult, true, "Flight has not been registered");
-    assert.equal(result.logs[0].event, "FlightWasRegisteredApp", "Event FlightWasRegisteredApp has not been emitted" )
-    assert.equal(getRegisteredFlightResult[0].substring(0,14), flight, "Flight app has not been recorded in airline's mapping")
+    assert.equal(result.logs[0].event, "FlightWasRegistered", "Event FlightWasRegistered has not been emitted" )
+    // assert.equal(getRegisteredFlightResult[0].substring(0,14), flight, "Flight app has not been recorded in airline's mapping")
   });
 
   it('(passenger) cannot buy insurance using buyInsurance() if not enough funds are provided', async () => {
@@ -391,7 +391,7 @@ contract('Flight Surety App Tests ', async (accounts) => {
     // ASSERT
     assert.equal(isInsuranceBought, true, "passenger should be able to buy an insurrance for a flight");
     assert.equal(contractBalanceAfter - contractBalanceBefore, INSURANCE_PRICE, "Balance has not been increased from funds")
-    assert.equal(result.logs[0].event , "newInsuranceApp", "Event newInsuranceApp was not emitted");
+    assert.equal(result.logs[0].event , "newInsuranceHasBeenSubmitted", "Event newInsuranceHasBeenSubmitted was not emitted");
   });
 
   it('() process fetched status code', async () => {
@@ -417,7 +417,7 @@ contract('Flight Surety App Tests ', async (accounts) => {
 
     }
     let contractBalanceAfter = await config.flightSuretyData.getContractBalance.call();
-    let isFlightSatusUpdated = await config.flightSuretyData.viewFlightSatus.call(flight, airline, timestamp); 
+    let isFlightSatusUpdated = await config.flightSuretyData.viewFlightSatusTest.call(flight, timestamp, airline); 
 
     // ASSERT
     assert.equal(isFlightSatusUpdated.toString(), 50, "Flight status has not been updated");

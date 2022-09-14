@@ -1,5 +1,5 @@
 <div class="main-container">
-    <form [formGroup]="airlineForm" (ngSubmit)="submitForm()" novalidate autocomplete="off">
+    <form [formGroup]="airlineForm" (ngSubmit)="submitForm()" novalidate autocomplete="off" class="black-container">
         <div class="form-container">
             <mat-form-field>
                 <mat-select matSelect formControlName="airline" placeholder="Select Airline">
@@ -15,5 +15,6 @@
             </mat-form-field>
             <button type="submit">Submit Flight</button>
         </div>
+        <div *ngIf="resultToDisplay"><em class="accent">{{ eventToDisplay }} --</em> {{ resultToDisplay }}</div>
     </form>
 </div>

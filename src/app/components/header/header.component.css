@@ -9,10 +9,11 @@
 
 .logo {
     font-size: 1.4rem;
+    margin: auto 0;
 }
 
 .nav {
-    margin-left: 70px;
+    margin-left: 100px;
 }
 
 .nav a {
@@ -29,13 +30,18 @@
   .nav a:hover,
   .nav a:focus {
     border-bottom: solid 2px;
-    color: #fff;
+  }
+
+  .nav .active {
+    cursor: default;
+    color: #ff1493;
   }
 
   .on-contract {
-    justify-self: flex-end;
+    margin-left: auto;
+    margin-right: 20px;
     background-color: green;
-    height: 20px;
-    width: 20px;
+    height: 25px;
+    width: 25px;
     border-radius: 50%;
   }

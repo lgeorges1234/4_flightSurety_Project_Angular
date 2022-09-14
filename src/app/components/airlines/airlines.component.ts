@@ -14,6 +14,8 @@ export class AirlinesComponent implements OnInit {
   owner: any;
   firstAirline: any;
   flight: any;
+  eventToDisplay: any;
+  resultToDisplay: any;
   
   accountValidationMessages = {
     flightName: [
@@ -51,14 +53,19 @@ export class AirlinesComponent implements OnInit {
   }
 
   submitForm() {
+    let self = this;
     if (this.airlineForm.invalid) {
       alert('airlines.components :: submitForm :: Form invalid');
       return;
     } else {
       console.log('airlines.components :: submitForm :: this.airlineForm.value');
       console.log(this.airlineForm.value);
-      this.contractService.registerFlight(this.airlineForm.value).
-      then(function() {}).catch(function(error: any) {
+      this.contractService.registerFlight(this.airlineForm.value)
+      .then(function(data) {
+        let flightName =  self.contractService.hexToString(data.returnValues.flightName);
+        self.eventToDisplay = data.event;
+        self.resultToDisplay = `Airline: ${data.returnValues.airline} Timestamp: ${data.returnValues.timeStamp} Flights: ${flightName}`;
+      }).catch(function(error: any) {
       console.log(error);
       });
     }
