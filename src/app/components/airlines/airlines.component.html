@@ -2,7 +2,7 @@
     <form [formGroup]="airlineForm" (ngSubmit)="submitForm()" novalidate autocomplete="off" class="black-container">
         <div class="form-container">
             <mat-form-field>
-                <mat-select matSelect formControlName="airline" placeholder="Select Airline">
+                <mat-select matSelect formControlName="airline" placeholder="Select Airline" required>
                     <mat-option [value]="null" disabled>Select Airline</mat-option>
                     <mat-option *ngFor="let airline of airlineList" [value]="airline">{{ airline }}</mat-option>
                 </mat-select>

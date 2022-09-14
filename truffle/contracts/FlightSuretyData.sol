@@ -120,6 +120,7 @@ contract FlightSuretyData {
         _;
     }
 
+
     /********************************************************************************************/
     /*                                       EVENT DECLARATION                                */
     /********************************************************************************************/
@@ -436,6 +437,8 @@ contract FlightSuretyData {
         require(Flights[_flightID].isRegistered == true, "Flight is not registered");
         // Get a unique 32 bytes ID to insurance given flight id, passenger address and amount given.
         bytes32 _insuranceID = getInsuranceKey(_flightID, _passenger, _value); 
+        // check if insurance has not been yet pursued by the client
+        require(Insurances[_insuranceID].value == 0, "Insurance can not be pursued more than once");
         // Fund contract with insurance
         fund(_passenger, _value);
         // Check if the balance has been increased

@@ -1,9 +1,9 @@
 # FlightSurety
 
 FlightSurety is a sample application project for Udacity's Blockchain course.
-
+<br/><br/>
 ## Install
-
+<br/>
 This repository contains Smart Contract code in Solidity (using Truffle), tests (also using Truffle), dApp scaffolding (using Angular) and server app scaffolding.
 
 To install, download or clone the repo, then:
@@ -11,10 +11,13 @@ To install, download or clone the repo, then:
 `npm install`
 `npm run truffleCompile`
 
+<br/><br/>
+
 ## Develop and Deploy Project
+<br/>
 
 ### Develop Client
-
+<br/>
 To run truffle tests:
 
 `npm run truffleTest`
@@ -27,58 +30,100 @@ To use the dapp:
 To view dapp:
 
 `http://localhost:8000`
+<br/>
 
 ### Develop Server
-
+<br/>
 `npm run server`
 `npm run truffleTest`
+<br/>
 
 ### Deploy
-
+<br/>
 To build dapp for prod:
 `npm run dapp:prod`
 
 Deploy the contents of the ./dapp folder
+<br/><br/>
 
 ## Frontend manuals
+<br/>
+Three panels are composing the frontend interface to represent the three actors involved in the process:
+<br/><br/>
 
-Three pannels are composing the frontend interface to represent the three actors involved in the process:
+![Panel Frontend](./docs/capture/navBar.PNG "Panel Frontend")
+<br/>
 
 ### Airlines:
+<br/>
 
-4 airlines will be automatically registered at the initialization of the page. Please wait to see them on the select menue of the airlinesForm.
+![Airline Frontend](./docs/capture/airlines.PNG "Airline Frontend")
 
-Select an airline and proceed to the registration of a flight for this airline. The flight number must be a 5 letter word.
+4 airlines will automatically be registered at the initialization of the page. 
+
+> Please wait to see them on the select menue of the airlinesForm.
+
+Select an airline and proceed to the registration of a flight for this airline. 
+
+> The flight number must be a 5 letter word.
+<br/>
 
 ### Clients:
+<br/>
 
 As a client you can pursue an insurance.
+<br/><br/>
 
-Selecte an airline and a flight;
+![Client Frontend](./docs/capture/clients.PNG "Client Frontend")
+<br/>
 
-Choose the amount of the insurance between 0 an 1 Eth;
+Select an airline and a flight.
 
-Click the "Submit Insurance" button to buy the insurance;
+Choose the amount of the insurance between 0 an 1 Eth.
+
+Click the "Submit Insurance" button to buy the insurance.
 
 2 account balances can be viewed on the pannel:
-- the client personal account - which is, in this case, a ganache account;
-- the client account that has been created in the flightSurety contract;
 
-Once the flightSurety account is fill in with the insurance amount - due to a late departure, the client can withdraw this amount into it's ganache account just by clicking on the withdraw button. 
+- the client personal account - which is, in this case, a ganache account.
+
+- the client account that has been created in the flightSurety contract.
+
+Once the flightSurety account is fill in with the insurance amount - due to a late departure, the client can withdraw this amount into it's ganache account by clicking on the withdraw button. 
+
+> You need, for the moment, to refresh the page in order to see the change in the FligthSurety Balance.
+<br/>
 
 ### Oracles:
+<br/>
+
+![Oracle Frontend](./docs/capture/oracles.PNG "Oracle Frontend")
+<br/>
 
 The Oracles process will start when airline and flight have been selected and the user press on the "Fetch Oracle" button. 
-The fetch for flight status will be launched. 
-The server will receive the event and check which registered oracles match the index. T
+- The fetch for flight status will be launched. 
+- The server will receive the event and check which registered oracles match the index. T
 he choosed oracles will then be allowed to respond sending a randomly choosen status.
 
-Once the contract get enough answers with the same code, it considers the status to be true and process accordingly.
+- Once the contract get enough answers with the same code, it considers the status to be true and process accordingly.
 
-The client is credited on the flightSurety account to the due amount in case of late departure.
+- The client is finally credited on its flightSurety account to the due amount in case of late departure.
+<br/>
+
+### Contract Status:
+<br/>
+
+The contract status is represented by a circle in the nav Bar that takes:
+- a green color in case of "On status". 
+- a red color when the status of the contract is off.
+<br/>
+
+![Contract Status](./docs/capture/contract-status.PNG "Contract Status")
+<br/><br/>
 
 ## Dependencies
-    
+ <br/>
+
     Angular: 13.2.7,
     nodemon: 2.0.19,
     truffle: 5.5.28,
@@ -86,8 +131,11 @@ The client is credited on the flightSurety account to the due amount in case of 
     http: 0.0.1-security,
     web3: 1.7.5,
     openzeppelin-solidity: 2.0,
+<br/>
 
 ## Resources
+<br/>
+
 * [Get started with Angular?](https://angular.io/start)
 * [Learn how to create your own Dapp with Angular 9](https://medium.com/blockchain-developer/learn-how-to-create-your-own-dapp-with-angular-part-i-688f24e0ad9e)
 * [How does Ethereum work anyway?](https://medium.com/@preethikasireddy/how-does-ethereum-work-anyway-22d1df506369)
@@ -98,12 +146,24 @@ The client is credited on the flightSurety account to the due amount in case of 
 * [Solidity Language Reference](http://solidity.readthedocs.io/en/v0.4.24/)
 * [Ethereum Blockchain Explorer](https://etherscan.io/)
 * [Web3Js Reference](https://github.com/ethereum/wiki/wiki/JavaScript-API)
+<br/><br/>
 
 ## To Do
+<br/>
 
 ### Web3
-- Authentication machanism with metamask signature
+- Authentication mechanism with metamask signature.
+
+### Solidity
+- Fund() transfer funds to the contract's address.
+- Modify view function to deserve frontend needs.
 
 ### Frontend
-- Annimation withdraw arrow
+- Annimation for the withdraw arrow.
+- Implement missing features:
+    - screen airline's name instead of address.
+- Reusable components - form, fields...
+- Catch events and provok reactions or updates.
+- Cache flights request
+
 
