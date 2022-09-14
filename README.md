@@ -30,13 +30,13 @@ To use the dapp:
 To view dapp:
 
 `http://localhost:8000`
-<br/>
+<br/><br/>
 
 ### Develop Server
 <br/>
 `npm run server`
 `npm run truffleTest`
-<br/>
+<br/><br/>
 
 ### Deploy
 <br/>
@@ -66,6 +66,7 @@ Three panels are composing the frontend interface to represent the three actors 
 Select an airline and proceed to the registration of a flight for this airline. 
 
 > The flight number must be a 5 letter word.
+
 <br/>
 
 ### Clients:
@@ -92,6 +93,9 @@ Click the "Submit Insurance" button to buy the insurance.
 Once the flightSurety account is fill in with the insurance amount - due to a late departure, the client can withdraw this amount into it's ganache account by clicking on the withdraw button. 
 
 > You need, for the moment, to refresh the page in order to see the change in the FligthSurety Balance.
+
+> Transfer functions between Ganache accounts and contract account has not been set yet.
+
 <br/>
 
 ### Oracles:
@@ -108,12 +112,12 @@ he choosed oracles will then be allowed to respond sending a randomly choosen st
 - Once the contract get enough answers with the same code, it considers the status to be true and process accordingly.
 
 - The client is finally credited on its flightSurety account to the due amount in case of late departure.
-<br/>
+<br/><br/>
 
 ### Contract Status:
 <br/>
 
-The contract status is represented by a circle in the nav Bar that takes:
+The contract status is represented by a circle in the nav Bar. It takes:
 - a green color in case of "On status". 
 - a red color when the status of the contract is off.
 <br/>
@@ -155,7 +159,7 @@ The contract status is represented by a circle in the nav Bar that takes:
 - Authentication mechanism with metamask signature.
 
 ### Solidity
-- Fund() transfer funds to the contract's address.
+- Fund() transfers funds to the contract's address.
 - Modify view function to deserve frontend needs.
 
 ### Frontend
@@ -164,6 +168,6 @@ The contract status is represented by a circle in the nav Bar that takes:
     - screen airline's name instead of address.
 - Reusable components - form, fields...
 - Catch events and provok reactions or updates.
-- Cache flights request
+- Cache flights requests.
 
 
