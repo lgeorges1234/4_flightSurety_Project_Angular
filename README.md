@@ -9,7 +9,8 @@ This repository contains Smart Contract code in Solidity (using Truffle), tests 
 To install, download or clone the repo, then:
 
 `npm install`
-`npm run truffleCompile`
+`cd truffle`
+`truffle --netword dev compile`
 
 <br/><br/>
 
@@ -20,11 +21,15 @@ To install, download or clone the repo, then:
 <br/>
 To run truffle tests:
 
-`npm run truffleTest`
+<!-- `npm run truffleTest` -->
+`cd truffle`
+`truffle --netword dev test`
 
 To use the dapp:
 
-`npm run truffleMigrate`
+`cd truffle`
+`truffle --netword dev migrate`
+`cd ..`
 `npm run dapp`
 
 To view dapp:
@@ -34,9 +39,10 @@ To view dapp:
 
 ### Develop Server
 <br/>
+
 `npm run server`
-`npm run truffleTest`
-<br/><br/>
+
+<br/>
 
 ### Deploy
 <br/>
@@ -104,10 +110,9 @@ Once the flightSurety account is fill in with the insurance amount - due to a la
 ![Oracle Frontend](./docs/capture/oracles.PNG "Oracle Frontend")
 <br/>
 
-The Oracles process will start when airline and flight have been selected and the user press on the "Fetch Oracle" button. 
+The Oracles process will start when airline, flight have been selected and the user press on the "Fetch Oracle" button. 
 - The fetch for flight status will be launched. 
-- The server will receive the event and check which registered oracles match the index. T
-he choosed oracles will then be allowed to respond sending a randomly choosen status.
+- The server will receive the event and check which registered oracles match the index. The choosed oracles will then be allowed to respond sending a randomly choosen status.
 
 - Once the contract get enough answers with the same code, it considers the status to be true and process accordingly.
 
